@@ -42,4 +42,6 @@ It will take as fast as your computer is jruby does this faster from what i foun
 
 This is all i have so far and will update regularly !
 
+PS: Plus it give you your first exposure to MonetDB if you haven't seen it before
+
 Have fun!
