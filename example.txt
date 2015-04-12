@@ -1,0 +1,17 @@
+mclient -u monetdb -d anagrams
+password:
+Welcome to mclient, the MonetDB/SQL interactive terminal (Jan2014)
+Database: MonetDB v11.17.9 (Jan2014), 'mapi:monetdb://orville.lan:50000/anagrams'
+Type \q to quit, \? for a list of available commands
+auto commit mode: on
+sql>set schema "anagrams";
+auto commit mode: on
+sql>select word, anagrams from words where anagrams like '% coat %' group by word, anagrams;
++------+---------------------------------------------------------------------------------------------------------------------------+
+| word | anagrams                                                                                                                  |
++======+===========================================================================================================================+
+| coat |  acot acto aoct aotc atco atoc caot cato coat cota ctao ctoa oact oatc ocat octa otac otca taco taoc tcao tcoa toac toca  |
+| taco |  acot acto aoct aotc atco atoc caot cato coat cota ctao ctoa oact oatc ocat octa otac otca taco taoc tcao tcoa toac toca  |
++------+---------------------------------------------------------------------------------------------------------------------------+
+2 tuples (0.9s)
+sql>
