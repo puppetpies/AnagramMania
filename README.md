@@ -34,4 +34,12 @@ mclient -u monetdb -d anagrams # Default password same as the user.
 
 The paste the schema anagrams.sql into the client its small contains no data.
 
+Loading the data is just
+
+ruby main.rb
+
+It will take as fast as your computer is jruby does this faster from what i found.
+
+This is all i have so far and will update regularly !
+
 Have fun!
