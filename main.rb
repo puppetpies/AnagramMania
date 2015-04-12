@@ -60,7 +60,7 @@ class Anagrams
     conn.dbname = "anagrams"
     conn.autocommit = true
     conn.connect 
-    File.open("mylist.txt", 'r') {|t|
+    File.open("#{name}", 'r') {|t|
       t.each_line {|l|
         w = l.strip
         unless w.match("'")
