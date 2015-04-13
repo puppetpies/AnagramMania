@@ -1,10 +1,7 @@
-CREATE USER "monetdb" WITH PASSWORD 'monetdb' NAME 'Anagrams' SCHEMA "sys";
-CREATE SCHEMA "monetdb" AUTHORIZATION "monetdb";
-ALTER USER "monetdb" SET SCHEMA "monetdb";
-SET SCHEMA "monetdb";
+CREATE SCHEMA "anagrams" AUTHORIZATION "monetdb";
+SET SCHEMA "anagrams";
 
-
-CREATE TABLE "monetdb".words (
+CREATE TABLE "anagrams".words (
 word_id INT GENERATED ALWAYS AS 
         IDENTITY (
            START WITH 0 INCREMENT BY 1
