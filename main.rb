@@ -27,6 +27,8 @@ class Anagrams
     @dbname = "anagrams"
   end
   
+  protected
+  
   def perms(word, maxgenperms)
     unless @quiet == false; print "\e[1;34mWord:\e[0m\ \e[1;32m#{word}\e[0m\ \e[1;34mPermutations:\e[0m\ "; end
     #print "Word: #{word}"
@@ -60,7 +62,7 @@ class Anagrams
     print " ...\e[0m\ "
     unless @quiet == false; print "\n"; end
   end
-
+  
   def dbconnect
     @conn = DatalayerLight.new
     @conn.hostname = @hostname
@@ -84,24 +86,31 @@ class Anagrams
     @conn.close
   end
   
+  public
+  
   def readfile(name)
     self.dbconnect
-    File.open("#{name}", 'r') {|t|
-      t.each_line {|l|
-        w = l.strip
-        unless w.match("'")
-          c = self.perms("#{w}", 150)
-          self.show(c)
-          begin
-            @conn.query("#{@sql}")
-            unless @quiet == false; print "\e[1;30mSQL: #{@sql[0..160]}\e[0m\ \n"; end
-          rescue
-            puts "DB Error"
-            exit
+    begin
+      File.open("#{name}", 'r') {|t|
+        t.each_line {|l|
+          w = l.strip
+          unless w.match("'")
+            c = self.perms("#{w}", 150)
+            self.show(c)
+            begin
+              @conn.query("#{@sql}")
+              unless @quiet == false; print "\e[1;30mSQL: #{@sql[0..160]}\e[0m\ \n"; end
+            rescue
+              puts "DB Error"
+              exit
+            end
           end
-        end
+        }
       }
-    }
+    rescue Errno::EBADF
+      puts "Stopping import"
+      puts "Bye!"
+    end
     self.dbclose
   end
 
