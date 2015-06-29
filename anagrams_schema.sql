@@ -9,7 +9,7 @@ word_id INT GENERATED ALWAYS AS
            CACHE 2 CYCLE
 ) primary key,
   word varchar(200) not null,
-  monetdb varchar(8192) not null
+  anagrams varchar(8192) not null
 );
 
 
