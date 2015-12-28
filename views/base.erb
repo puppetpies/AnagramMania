@@ -1,0 +1,51 @@
+<html>
+<head>
+<h3>Anagram Mania</h3>
+</head>
+<body>
+<style type="text/css">
+ table {
+  border-width: 0;
+  border-style: none;
+  border-color: #0000ff;
+  border-collapse: collapse;
+ }
+ td {
+   border-width: 0;
+   border-style: none;
+   border-color: #0000ff;
+   border-collapse: collapse;
+   padding: 0;
+   margin: 0;
+   width: 10px;
+   height: 10px;
+ }
+ td.black { background-color: #000; }
+ td.white { background-color: #fff; }
+</style>
+
+<table width="100%" align="centre" border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td>
+<form action="/" method="POST">
+	<td>Search for the Anagram of a word: <input type="text" name="anagram" id="anagram"><input type="submit" name="submit" value="Lookup"></td>
+</form>
+</tr></td>
+<tr><td></td></tr>
+</table>
+
+<% if @anagrams %>
+
+<table width="80%">
+<tr><th align="left">Word</th><th align="left">Anagrams</th></tr>
+ <% @anagrams.each do |word| %>
+   <tr>
+      <td><%= word[0] %></td><td><%= word[1] %></td>
+   </tr>
+ <% end %>
+</table>
+
+<% end %>
+
+</body>
+</html>
