@@ -84,14 +84,12 @@ class AnagramsWeb < Sinatra::Base
     self.dbconnect
     @anagrams = Hash.new
     if @conn.is_connected?
-			sql = "SELECT word, anagrams FROM \"anagrams\".words WHERE anagrams LIKE '% #{anagram} %'";
+      sql = "SELECT word, anagrams FROM \"anagrams\".words WHERE anagrams LIKE '% #{anagram} %' OR word = '#{anagram}';";
       res = @conn.query(sql)
       while row = res.fetch_hash do
         @anagrams.update({"#{row["word"]}" => "#{row["anagrams"]}"})
       end
-      #pp @anagrams.class
-      #puts @anagrams
-		end
+    end
     self.dbclose
   end
 
