@@ -39,7 +39,7 @@ class Anagrams
     maxgenperms.times {|n|
       a = "#{word}".split(//).shuffle
       b[l] = a.join
-      l = l + 1
+      l +=  1
     }
     c = b.uniq.sort
     c.each {|s|
