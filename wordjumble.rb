@@ -16,7 +16,7 @@ require 'getoptlong'
 require 'MonetDB'
 require './datalayerlight.rb'
 
-@debug = true
+@debug = false
 
 ARGV[0] = "--help" if ARGV[0] == nil
 
@@ -123,8 +123,36 @@ def wordjumble(myword, numchars)
   return wordjumble
 end
 
-def lookup(myword, numchars)
+def startlist
   @fulllist = Array.new
+end
+
+def addtolist(word)
+  @fulllist.insert(0, "#{word}")
+end
+
+def displaylist
+  @wordsfound = String.new
+  @fulllist.each {|n|
+    print "#{n} "
+    @wordsfound << "#{n} "
+  }
+end
+
+def uniquelist
+  @fulllist.sort!.uniq!
+end
+
+def query_handler(sql)
+  begin
+    res = @conn.query(sql)
+    return res
+  rescue Errno::EPIPE
+    puts "Connection gone away ?" if @debug == true
+  end
+end
+
+def lookup(myword, numchars)
   dbconnect
   if instance_variable_defined?("@shuffle")
     myword = myword.split(//).shuffle.join
@@ -136,33 +164,90 @@ def lookup(myword, numchars)
   inquery.sub!(%r=, $=, "")
   inquery << ");"
   sql = "SELECT word FROM \"anagrams\".words WHERE word #{inquery}";
-  begin
-    res = @conn.query(sql)
-  rescue Errno::EPIPE
-    puts "Connection gone away ?" if @debug == true
-  end
+  res = query_handler(sql)
   puts sql if @debug == true
   while row = res.fetch_hash do
     puts "Word: #{row["word"]}"
     realword = row["word"]
-    @fulllist.insert(0, "#{realword}")
+    addtolist(realword)
   end
-  @fulllist.sort!.uniq!
+  uniquelist
   dbclose
 end
 
-0.upto(@passes) {|p|
-  puts "Pass number: #{p}"
-  3.upto(@numchars) {|n|
-    puts "Matches #{n} Letters"
-    lookup(@word, n)
+def lookup_wordid(myword)
+  dbconnect
+  sql = "SELECT word_id FROM \"anagrams\".words WHERE word = '#{myword}';";
+  res = query_handler(sql)
+  puts sql if @debug == true
+  row = res.fetch_hash
+  begin
+    word_id = row["word_id"]
+    puts "Word ID: #{word_id}"
+  rescue
+    puts "Field doesn't exist" if @dbeug == true
+  end
+  return word_id
+  dbclose
+end
+
+def lookup_jumbleidexists?(word_id)
+  dbconnect
+  sql = "SELECT COUNT(word_id) AS num FROM \"anagrams\".wordjumble WHERE word_id = #{word_id};";
+  res = query_handler(sql)
+  puts sql if @debug == true
+  row = res.fetch_hash
+  begin
+    num = row["num"].to_i
+    puts "Jumble Word ID Count: #{num}"
+  rescue
+    puts "Field doesn't exist" if @dbeug == true
+  end
+  return num
+  dbclose
+end
+
+def runmain!
+  startlist
+  0.upto(@passes) {|p|
+    puts "Pass number: #{p}"
+    3.upto(@numchars) {|n|
+      puts "Matches #{n} Letters"
+      lookup(@word, n)
+    }
   }
-}
+end
+
+def batchmode(numchars)
+  dbconnect
+  sql = "SELECT word FROM \"anagrams\".words WHERE LENGTH(word) = #{numchars} AND word LIKE 'a%' ORDER BY word ASC LIMIT 5;"
+  res = query_handler(sql)
+  puts sql if @debug == true
+  while row = res.fetch_hash do
+    @word = row["word"]
+    word_id = lookup_wordid("#{@word}")
+    runmain!
+    sql_insert = "INSERT INTO \"anagrams\".wordsjumble (word_id, realwords) VALUES ('#{word_id}', '#{@wordsfound}')";
+    res = query_handler(sql_insert)
+  end
+  dbclose
+end
+
+runmain!
 
 at_exit {
   print "Results: "
-  @fulllist.each {|n|
-    print "#{n} "
+  displaylist
+  puts ""
+  @fulllist.each {|i|
+    word_id = lookup_wordid(i).to_i
+    jumble_count = lookup_jumbleidexists?(word_id)
+    unless jumble_count >= 1
+      sql_insert = "INSERT INTO \"anagrams\".wordjumble (word_id, word) VALUES (#{word_id}, '#{@word}');";
+      res = query_handler(sql_insert)
+    else
+      puts "Jumble Word ID: #{i} exists skipping..."
+    end
   }
   puts "\nTotal words: #{@fulllist.size}"
 }
