@@ -1,10 +1,22 @@
+########################################################################
+#
+# Author: Brian Hood
+#
+# Description: Anagrams / Permutations
+#
+# Application: wordjumble.rb
+#
+# Generate Wordjumbles and generate queries to see if the word exists
+# via the Oxford English dictionary.
+#
+########################################################################
+
 require 'pp'
 require 'getoptlong'
 require 'MonetDB'
 require './datalayerlight.rb'
 
-@debug = false
-
+@debug = true
 
 ARGV[0] = "--help" if ARGV[0] == nil
 
@@ -39,7 +51,7 @@ opts.each do |opt, arg|
     
 Example:
       
-      ruby wordjumble -w astromonical -n 6
+      ruby wordjumble.rb -w astromonical  --numchars 12 --permutations 300 -s --passes 5
       
       ]
       puts helper
@@ -84,7 +96,6 @@ end
 def words(text, leftpos, num)
   right = num
   name = String.new
-  puts "#{text.size} #{num}" if @debug == true
   0.upto(text.size - 2) {|n|
     name = text[leftpos...right] if text[leftpos...right].size == num
     right += 1
@@ -112,8 +123,8 @@ def wordjumble(myword, numchars)
   return wordjumble
 end
 
-@fulllist = Array.new
 def lookup(myword, numchars)
+  @fulllist = Array.new
   dbconnect
   if instance_variable_defined?("@shuffle")
     myword = myword.split(//).shuffle.join
@@ -124,11 +135,11 @@ def lookup(myword, numchars)
   words.each {|n| inquery << "'#{n}', " }
   inquery.sub!(%r=, $=, "")
   inquery << ");"
-  sql = "SELECT word, anagrams FROM \"anagrams\".words WHERE word #{inquery}";
+  sql = "SELECT word FROM \"anagrams\".words WHERE word #{inquery}";
   begin
     res = @conn.query(sql)
   rescue Errno::EPIPE
-    
+    puts "Connection gone away ?" if @debug == true
   end
   puts sql if @debug == true
   while row = res.fetch_hash do
@@ -137,9 +148,8 @@ def lookup(myword, numchars)
     @fulllist.insert(0, "#{realword}")
   end
   @fulllist.sort!.uniq!
-
+  dbclose
 end
-#dbclose
 
 0.upto(@passes) {|p|
   puts "Pass number: #{p}"
@@ -150,6 +160,9 @@ end
 }
 
 at_exit {
-  pp @fulllist
-  puts "Total words: #{@fulllist.size}"
+  print "Results: "
+  @fulllist.each {|n|
+    print "#{n} "
+  }
+  puts "\nTotal words: #{@fulllist.size}"
 }
