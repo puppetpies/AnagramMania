@@ -27,3 +27,4 @@ jid INT GENERATED ALWAYS AS
 
 SELECT a.word AS jumble, b.word FROM words a JOIN wordjumble b ON (a.word_id = b.word_id) WHERE b.word = 'sarcophagus';
 
+SELECT a.word AS jumble, b.word FROM words a JOIN wordjumble b ON (a.word_id = b.word_id) GROUP by b.word_id, a.word, b.word;
