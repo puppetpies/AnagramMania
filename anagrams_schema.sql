@@ -24,3 +24,6 @@ jid INT GENERATED ALWAYS AS
   word varchar(200) not null,
   FOREIGN KEY (word_id) REFERENCES "anagrams".words (word_id)
 );
+
+SELECT a.word AS jumble, b.word FROM words a JOIN wordjumble b ON (a.word_id = b.word_id) WHERE b.word = 'sarcophagus';
+
