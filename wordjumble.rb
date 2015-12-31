@@ -193,7 +193,7 @@ end
 
 def lookup_jumbleidexists?(word_id)
   dbconnect
-  sql = "SELECT COUNT(word_id) AS num FROM \"anagrams\".wordjumble WHERE word_id = #{word_id};";
+  sql = "SELECT COUNT(word_id) AS num FROM \"anagrams\".wordjumble WHERE word_id = #{word_id} AND word = '#{@word}';";
   res = query_handler(sql)
   puts sql if @debug == true
   row = res.fetch_hash
@@ -246,7 +246,7 @@ at_exit {
       sql_insert = "INSERT INTO \"anagrams\".wordjumble (word_id, word) VALUES (#{word_id}, '#{@word}');";
       res = query_handler(sql_insert)
     else
-      puts "Jumble Word ID: #{i} exists skipping..."
+      puts "Jumble Word ID: #{i} and Word: #{@word} exists skipping..."
     end
   }
   puts "\nTotal words: #{@fulllist.size}"
