@@ -2,29 +2,10 @@
 <title>Anagram Mania</title>
 <head>
 <h3>Anagram Mania</h3>
+<head>
+<link rel="stylesheet" href="css/screen.css" type="text/css" media="screen">
 </head>
 <body>
-<style type="text/css">
- table {
-  border-width: 0;
-  border-style: none;
-  border-color: #0000ff;
-  border-collapse: collapse;
- }
- td {
-   border-width: 0;
-   border-style: none;
-   border-color: #0000ff;
-   border-collapse: collapse;
-   padding: 0;
-   margin: 0;
-   width: 10px;
-   height: 10px;
- }
- td.black { background-color: #000; }
- td.white { background-color: #fff; }
-</style>
-
 <table width="100%" align="centre" border="0" cellpadding="0" cellspacing="0">
 <tr>
 <td>
@@ -34,12 +15,21 @@
 </tr></td>
 <tr><td></td></tr>
 </table>
-
+<br>
 <% if @anagrams %>
 
 <table width="80%">
 <tr><th align="left">Word</th><th align="left">Anagrams</th></tr>
  <% @anagrams.each do |word| %>
+   <tr>
+      <td><%= word[0] %></td><td><%= word[1] %></td>
+   </tr>
+ <% end %>
+</table>
+<br>
+<table width="80%">
+<tr><th align="left">Word Jumble</th><th align="left">Word</th></tr>
+ <% @wordjumble.each do |word| %>
    <tr>
       <td><%= word[0] %></td><td><%= word[1] %></td>
    </tr>
