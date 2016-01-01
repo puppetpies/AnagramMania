@@ -114,6 +114,10 @@ class AnagramsWeb < Sinatra::Base
     erb :base
   end
   
+  get '/css/screen.css' do
+     send_file 'css/screen.css', :type => :css
+  end
+  
   run!
 
 end
