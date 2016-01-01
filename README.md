@@ -45,3 +45,6 @@ This is all i have so far and will update regularly !
 PS: Plus it give you your first exposure to MonetDB if you haven't seen it before
 
 Have fun!
+
+![AnagramMania](https://raw.githubusercontent.com/puppetpies/AnagramMania/master/anagrammania.jpg)
+
