@@ -80,14 +80,28 @@ class AnagramsWeb < Sinatra::Base
   set :port, 8080
   set :bind, "0.0.0.0"
 
+  def query_handler(sql)
+    begin
+      res = @conn.query(sql)
+      return res
+    rescue Errno::EPIPE
+      puts "Connection gone away ?" if @debug == true
+    end
+  end
+
   def search(anagram)
     self.dbconnect
-    @anagrams = Hash.new
+    @anagrams, @wordjumble = Hash.new, Hash.new
     if @conn.is_connected?
       sql = "SELECT word, anagrams FROM \"anagrams\".words WHERE anagrams LIKE '% #{anagram} %' OR word = '#{anagram}';";
-      res = @conn.query(sql)
+      res = query_handler(sql)
       while row = res.fetch_hash do
         @anagrams.update({"#{row["word"]}" => "#{row["anagrams"]}"})
+      end
+      sql_wordjumble = "SELECT a.word AS jumble, b.word FROM \"anagrams\".words a JOIN \"anagrams\".wordjumble b ON (a.word_id = b.word_id) WHERE b.word = '#{anagram}';"
+      res = query_handler(sql_wordjumble)
+      while row = res.fetch_hash do
+        @wordjumble.update({"#{row["jumble"]}" => "#{row["word"]}"})
       end
     end
     self.dbclose
