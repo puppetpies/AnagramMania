@@ -38,7 +38,7 @@ end
 
 def load!(num)
   dbconnect
-  res = query_handler("SELECT word FROM \"anagrams\".words WHERE LENGTH(word) = #{num} and word_id >= 109843;")
+  res = query_handler("SELECT word FROM \"anagrams\".words WHERE LENGTH(word) = #{num};")
   while row = res.fetch_hash do
     realword = row["word"]
     3.upto(realword.size) {|rsize|
