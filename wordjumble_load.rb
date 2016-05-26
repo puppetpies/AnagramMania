@@ -1,3 +1,17 @@
+########################################################################
+#
+# Author: Brian Hood
+#
+# Description: Anagrams / Permutations
+#
+# Application: wordjumble_load.rb
+#
+# Please remember 3 to 5 letters will take as fast as your CPU
+#
+# NOTES: JRuby / Rubinius benchmarking required
+#
+########################################################################
+
 require 'pp'
 require 'getoptlong'
 require 'MonetDB'
@@ -6,7 +20,7 @@ require './datalayerlight.rb'
 def dbconnect
   @conn = DatalayerLight.new
   @conn.debug = false
-  @conn.hostname = "172.17.0.6"
+  @conn.hostname = "172.17.0.7"
   @conn.username = "monetdb"
   @conn.password = "monetdb"
   @conn.dbname = "anagrams"
