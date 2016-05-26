@@ -72,7 +72,7 @@ end
 def dbconnect
   @conn = DatalayerLight.new
   @conn.debug = false
-  @conn.hostname = "172.17.0.6"
+  @conn.hostname = "172.17.0.7"
   @conn.username = "monetdb"
   @conn.password = "monetdb"
   @conn.dbname = "anagrams"
@@ -216,21 +216,6 @@ def runmain!
       lookup(@word, n)
     }
   }
-end
-
-def batchmode(numchars)
-  dbconnect
-  sql = "SELECT word FROM \"anagrams\".words WHERE LENGTH(word) = #{numchars} AND word LIKE 'a%' ORDER BY word ASC LIMIT 5;"
-  res = query_handler(sql)
-  puts sql if @debug == true
-  while row = res.fetch_hash do
-    @word = row["word"]
-    word_id = lookup_wordid("#{@word}")
-    runmain!
-    sql_insert = "INSERT INTO \"anagrams\".wordsjumble (word_id, realwords) VALUES ('#{word_id}', '#{@wordsfound}')";
-    res = query_handler(sql_insert)
-  end
-  dbclose
 end
 
 runmain!
