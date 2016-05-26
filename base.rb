@@ -38,7 +38,7 @@ class AnagramsWeb < Sinatra::Base
   set :logging, :true
 
   def dbdefaults
-    @hostname = "172.17.0.6"
+    @hostname = "172.17.0.7"
     @username = "monetdb"
     @password = "monetdb"
     @dbname = "anagrams"
@@ -116,6 +116,10 @@ class AnagramsWeb < Sinatra::Base
   
   get '/css/screen.css' do
      send_file 'css/screen.css', :type => :css
+  end
+  
+  get '/sdf' do
+    200
   end
   
   run!

@@ -9,7 +9,6 @@
 #                                                                      #
 ########################################################################
 
-require "json"
 require "pp"
 require 'MonetDB'
 require './datalayerlight.rb'
@@ -21,7 +20,7 @@ class Anagrams
   attr_accessor :hostname, :username, :password, :dbname
   
   def initialize
-    @hostname = "127.0.0.1"
+    @hostname = "172.17.0.7"
     @username = "monetdb"
     @password = "monetdb"
     @dbname = "anagrams"
@@ -121,5 +120,5 @@ puts Time.now
 t = Anagrams.new
 t.readfile("wordsEn.txt")
 puts Time.now
-#j = JSON.generate(a)
+
 
